@@ -10,28 +10,43 @@ interface MenuItem {
   name: string;
 }
 
+interface ExistingMenuItem {
+  id: number;
+  category: Category;
+  name: string;
+}
+
 export default function AdminMessMenu() {
   const [menuType, setMenuType] = useState<MenuType>("DAILY");
   const [category, setCategory] = useState<Category>("DAL");
   const [itemName, setItemName] = useState("");
   const [items, setItems] = useState<MenuItem[]>([]);
-  const [existing, setExisting] = useState<any[]>([]);
+  const [existing, setExisting] = useState<ExistingMenuItem[]>([]);
 
+  // ================= FETCH EXISTING MENU =================
   const fetchExisting = async () => {
-    const res = await api.get("/api/messmenu?type=DAILY");
-    setExisting(res.data);
+    try {
+      const res = await api.get(`/api/admin/messmenu?type=${menuType}`);
+      setExisting(res.data);
+    } catch (err) {
+      console.error("Fetch failed", err);
+      setExisting([]);
+    }
   };
 
   useEffect(() => {
     fetchExisting();
-  }, []);
+  }, [menuType]);
 
+  // ================= ADD ITEM =================
   const addItem = () => {
     if (!itemName.trim()) return;
-    setItems([...items, { category, name: itemName }]);
+
+    setItems(prev => [...prev, { category, name: itemName }]);
     setItemName("");
   };
 
+  // ================= SAVE MENU =================
   const saveMenu = async () => {
     if (items.length < 6) {
       alert("Minimum 6 food items required");
@@ -41,16 +56,33 @@ export default function AdminMessMenu() {
     const payload = items.map(i => ({
       menuType,
       category: i.category,
-      name: i.name
+      name: i.name,
     }));
+
+    console.log("🚀 Saving menu payload:", payload);
 
     try {
       await api.post("/api/admin/messmenu", payload);
       alert("Mess Menu saved successfully!");
       setItems([]);
-      fetchExisting(); // 🔥 refresh immediately
-    } catch {
+      fetchExisting();
+    } catch (err) {
+      console.error("Save failed", err);
       alert("Failed to save menu");
+    }
+  };
+
+  // ================= DELETE MENU =================
+  const deleteMenu = async () => {
+    if (!confirm("Are you sure you want to delete the menu?")) return;
+
+    try {
+      await api.delete(`/api/admin/messmenu?type=${menuType}`);
+      alert("Menu deleted");
+      setExisting([]);
+    } catch (err) {
+      console.error("Delete failed", err);
+      alert("Failed to delete menu");
     }
   };
 
@@ -61,15 +93,32 @@ export default function AdminMessMenu() {
       <div className="max-w-3xl mx-auto bg-white p-6 mt-8 rounded-xl shadow">
         <h1 className="text-2xl font-bold mb-4">Mess Menu Management</h1>
 
-        {/* EXISTING MENU */}
+        {/* CURRENT MENU */}
         <div className="mb-6">
           <h2 className="font-semibold mb-2">Current Menu</h2>
+
+          {existing.length === 0 && (
+            <p className="text-gray-500 text-sm">No menu available</p>
+          )}
+
           {existing.map(i => (
             <p key={i.id} className="text-sm text-gray-600">
-              {i.category} – {i.name} (Votes: {i.voteCount})
+              {i.category} – {i.name}
             </p>
           ))}
         </div>
+
+        {/* ITEMS TO BE SAVED */}
+        {items.length > 0 && (
+          <div className="mb-4 p-3 bg-yellow-50 rounded">
+            <p className="font-semibold text-sm">Items to be saved:</p>
+            {items.map((i, idx) => (
+              <p key={idx} className="text-sm">
+                {i.category} – {i.name}
+              </p>
+            ))}
+          </div>
+        )}
 
         {/* MENU TYPE */}
         <select
@@ -95,6 +144,7 @@ export default function AdminMessMenu() {
           <option value="OTHER">Other</option>
         </select>
 
+        {/* ADD ITEM */}
         <div className="flex gap-2 mb-4">
           <input
             value={itemName}
@@ -102,17 +152,30 @@ export default function AdminMessMenu() {
             placeholder="Food item"
             className="border p-2 rounded w-full"
           />
-          <button onClick={addItem} className="bg-blue-600 text-white px-4 rounded">
+          <button
+            onClick={addItem}
+            className="bg-blue-600 text-white px-4 rounded"
+          >
             Add
           </button>
         </div>
 
-        <button
-          onClick={saveMenu}
-          className="bg-green-600 text-white w-full py-2 rounded"
-        >
-          Save Menu
-        </button>
+        {/* ACTION BUTTONS */}
+        <div className="flex gap-3">
+          <button
+            onClick={saveMenu}
+            className="bg-green-600 text-white flex-1 py-2 rounded"
+          >
+            Save Menu
+          </button>
+
+          <button
+            onClick={deleteMenu}
+            className="bg-red-600 text-white flex-1 py-2 rounded"
+          >
+            Delete Menu
+          </button>
+        </div>
       </div>
     </div>
   );
