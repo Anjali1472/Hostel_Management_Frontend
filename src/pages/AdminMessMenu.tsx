@@ -14,6 +14,12 @@ interface ExistingMenuItem {
   id: number;
   category: Category;
   name: string;
+  voteCount: number;
+}
+
+interface VoteCount {
+  itemId: number;
+  voteCount: number;
 }
 
 export default function AdminMessMenu() {
@@ -22,6 +28,7 @@ export default function AdminMessMenu() {
   const [itemName, setItemName] = useState("");
   const [items, setItems] = useState<MenuItem[]>([]);
   const [existing, setExisting] = useState<ExistingMenuItem[]>([]);
+  // const [voteCounts, setVoteCounts] = useState<VoteCount[]>([]);
 
   // ================= FETCH EXISTING MENU =================
   const fetchExisting = async () => {
@@ -34,8 +41,22 @@ export default function AdminMessMenu() {
     }
   };
 
+  // ================= FETCH VOTE COUNTS =================
+  // const fetchVoteCounts = async () => {
+  //   try {
+  //     const res = await api.get(
+  //       `/api/admin/votes/count?menuType=${menuType}`
+  //     );
+  //     setVoteCounts(res.data);
+  //   } catch (err) {
+  //     console.error("Vote count fetch failed", err);
+  //     setVoteCounts([]);
+  //   }
+  // };
+
   useEffect(() => {
     fetchExisting();
+    // fetchVoteCounts();
   }, [menuType]);
 
   // ================= ADD ITEM =================
@@ -59,13 +80,12 @@ export default function AdminMessMenu() {
       name: i.name,
     }));
 
-    console.log("🚀 Saving menu payload:", payload);
-
     try {
       await api.post("/api/admin/messmenu", payload);
       alert("Mess Menu saved successfully!");
       setItems([]);
       fetchExisting();
+      // fetchVoteCounts();
     } catch (err) {
       console.error("Save failed", err);
       alert("Failed to save menu");
@@ -80,11 +100,18 @@ export default function AdminMessMenu() {
       await api.delete(`/api/admin/messmenu?type=${menuType}`);
       alert("Menu deleted");
       setExisting([]);
+      // setVoteCounts([]);
     } catch (err) {
       console.error("Delete failed", err);
       alert("Failed to delete menu");
     }
   };
+
+  // ================= MAP FOR FAST LOOKUP =================
+  // const voteMap: Record<number, number> = {};
+  // voteCounts.forEach(v => {
+  //   voteMap[v.itemId] = v.voteCount;
+  // });
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -95,15 +122,25 @@ export default function AdminMessMenu() {
 
         {/* CURRENT MENU */}
         <div className="mb-6">
-          <h2 className="font-semibold mb-2">Current Menu</h2>
+          <h2 className="font-semibold mb-2">
+            Current Menu ({existing.length} items)
+          </h2>
 
           {existing.length === 0 && (
             <p className="text-gray-500 text-sm">No menu available</p>
           )}
 
           {existing.map(i => (
-            <p key={i.id} className="text-sm text-gray-600">
-              {i.category} – {i.name}
+            <p
+              key={i.id}
+              className="text-sm text-gray-700 flex justify-between"
+            >
+              <span>
+                {i.category} - {i.name}
+              </span>
+              <span className="font-semibold text-blue-600">
+                {i.voteCount} votes
+              </span>
             </p>
           ))}
         </div>
@@ -111,7 +148,9 @@ export default function AdminMessMenu() {
         {/* ITEMS TO BE SAVED */}
         {items.length > 0 && (
           <div className="mb-4 p-3 bg-yellow-50 rounded">
-            <p className="font-semibold text-sm">Items to be saved:</p>
+            <p className="font-semibold text-sm">
+              Items to be saved ({items.length})
+            </p>
             {items.map((i, idx) => (
               <p key={idx} className="text-sm">
                 {i.category} – {i.name}

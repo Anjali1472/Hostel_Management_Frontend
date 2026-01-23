@@ -15,8 +15,6 @@ export default function MessMenu() {
 
   const fetchMenu = async () => {
     const res = await api.get("/api/student/messmenu?type=DAILY");
-    console.log("response messmenu student ")
-     console.log(res)
     setMenu(res.data);
   };
 
@@ -24,24 +22,43 @@ export default function MessMenu() {
     fetchMenu();
   }, []);
 
-  const vote = async () => {
-    try {
-      for (const itemId of Object.values(selected)) {
-        await api.post("/api/student/vote", { itemId });
-      }
-      alert("Votes submitted successfully!");
-      setSelected({});
-      fetchMenu(); // 🔥 refresh counts
-    } catch (e: any) {
-      alert(e.response?.data?.message || "Voting failed");
+  // ✅ FIXED VOTE FUNCTION
+  const [hasVoted, setHasVoted] = useState(false);
+
+const vote = async () => {
+  try {
+    if (hasVoted) {
+      alert("You already voted today");
+      return;
     }
-  };
+
+    const itemIds = Object.values(selected);
+
+    if (itemIds.length === 0) {
+      alert("Please select at least one item");
+      return;
+    }
+
+    await api.post("/api/student/vote", {
+    itemId: itemIds,
+
+    
+  });
+
+    alert("Votes submitted successfully!");
+    setHasVoted(true);
+    setSelected({});
+    fetchMenu();
+  } catch (e: any) {
+    alert(e.response?.data?.message || "Voting failed");
+  }  
+};
+
+
 
   const grouped = menu.reduce((acc: any, item) => {
-    console.log(item.category)
     acc[item.category] = acc[item.category] || [];
     acc[item.category].push(item);
-      console.log(item)
     return acc;
   }, {});
 
@@ -56,21 +73,17 @@ export default function MessMenu() {
           <div key={cat} className="mb-6 bg-white p-4 rounded-xl shadow">
             <h2 className="text-xl font-semibold mb-3">{cat}</h2>
 
-          {grouped[cat].map((item: MenuItem) => (
+            {grouped[cat].map((item: MenuItem) => (
               <label
                 key={item.id}
                 className={`flex justify-between items-center p-3 border rounded mb-2 cursor-pointer
                 ${selected[cat] === item.id ? "bg-blue-100 border-blue-400" : ""}`}
               >
-                {/* MENU ITEM DATA */}
                 <div>
                   <p className="font-medium text-gray-800">{item.name}</p>
-                  <p className="text-sm text-gray-500">
-                    Votes: {item.voteCount}
-                  </p>
+                  
                 </div>
 
-                {/* RADIO */}
                 <input
                   type="radio"
                   name={`menu-${cat}`}
@@ -82,16 +95,17 @@ export default function MessMenu() {
                 />
               </label>
             ))}
-
           </div>
         ))}
 
         <button
-          onClick={vote}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold"
-        >
-          Submit Vote
-        </button>
+  disabled={hasVoted}
+  onClick={vote}
+  className={`w-full py-3 rounded-lg font-semibold
+    ${hasVoted ? "bg-gray-400" : "bg-blue-600 text-white"}`}
+>
+  {hasVoted ? "Already Voted" : "Submit Vote"}
+</button>
       </div>
     </div>
   );
