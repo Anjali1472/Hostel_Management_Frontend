@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { FaBuilding, FaBed, FaClipboardList, FaUtensils } from "react-icons/fa";
+import { FaBuilding, FaBed, FaClipboardList, FaUtensils, FaCalendarAlt, FaExclamationCircle } from "react-icons/fa";
 
 export default function AdminDashboard() {
-  const stats = [
-    { label: "My Hostels", value: 2, icon: <FaBuilding className="w-6 h-6 text-white" />, color: "bg-blue-500" },
-    { label: "Total Rooms", value: 120, icon: <FaBed className="w-6 h-6 text-white" />, color: "bg-green-500" },
-    { label: "Occupied Rooms", value: 85, icon: <FaBed className="w-6 h-6 text-white" />, color: "bg-yellow-500" },
-    { label: "Pending Requests", value: 12, icon: <FaClipboardList className="w-6 h-6 text-white" />, color: "bg-red-500" },
-  ];
+  // const stats = [
+  //   { label: "My Hostels", value: 2, icon: <FaBuilding className="w-6 h-6 text-white" />, color: "bg-blue-500" },
+  //   { label: "Total Rooms", value: 120, icon: <FaBed className="w-6 h-6 text-white" />, color: "bg-green-500" },
+  //   { label: "Occupied Rooms", value: 85, icon: <FaBed className="w-6 h-6 text-white" />, color: "bg-yellow-500" },
+  //   { label: "Pending Requests", value: 12, icon: <FaClipboardList className="w-6 h-6 text-white" />, color: "bg-red-500" },
+  // ];
 
   const cards = [
     {
@@ -42,11 +42,24 @@ export default function AdminDashboard() {
     {
       name: "Night Out Requests",
       link: "/admin/nightout",
-      color: "from-purple-500 to-indigo-600",
+      color: "from-purple-500 to-indigo-500",
       desc: "Approve / reject student night out requests",
        icon: <FaUtensils className="w-10 h-10" />,
-    }
-
+    },
+    {
+      name: "Holiday Requests",
+      link: "/admin/holidays",
+      color: "from-cyan-500 to-blue-500",
+      desc: "Approve / reject holiday requests",
+      icon: <FaCalendarAlt className="w-10 h-10" />,
+    },
+     {
+      name: "Complaints",
+      link: "/admin/complaints",
+      color: "from-red-500 to-pink-500",
+      desc: "View & manage student complaints",
+      icon: <FaExclamationCircle className="w-10 h-10" />,
+    },
   ];
 
   return (
@@ -70,7 +83,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* STATS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+        {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
           {stats.map((stat) => (
             <div
               key={stat.label}
@@ -85,7 +98,7 @@ export default function AdminDashboard() {
               </h3>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* MODULES */}
         <h2 className="text-2xl font-bold text-gray-800 mb-4">

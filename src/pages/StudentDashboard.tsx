@@ -1,21 +1,22 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { FaCalendarCheck } from "react-icons/fa";
 import { FaBuilding, FaUtensils, FaCalendarDay, FaMoon, FaClipboardList } from "react-icons/fa";
 
 export default function StudentDashboard() {
   // Mock student info (later from backend)
   const studentInfo = {
     name: "John Doe",
-    hostel: "Maple Hostel",
-    room: "A-101",
-    status: "Approved",
+    // hostel: "Maple Hostel",
+    // room: "A-101",
+    // status: "Approved",
   };
 
-  const stats = [
-    { label: "Attendance %", value: "92%", icon: <FaCalendarDay className="mx-auto text-3xl text-blue-500" /> },
-    { label: "Mess Votes", value: 18, icon: <FaUtensils className="mx-auto text-3xl text-green-500" /> },
-    { label: "Complaints", value: 2, icon: <FaClipboardList className="mx-auto text-3xl text-red-500" /> },
-  ];
+  // const stats = [
+  //   { label: "Attendance %", value: "92%", icon: <FaCalendarDay className="mx-auto text-3xl text-blue-500" /> },
+  //   { label: "Mess Votes", value: 18, icon: <FaUtensils className="mx-auto text-3xl text-green-500" /> },
+  //   { label: "Complaints", value: 2, icon: <FaClipboardList className="mx-auto text-3xl text-red-500" /> },
+  // ];
 
   const cards = [
     { name: "View Hostels", link: "/student/hostels", color: "from-blue-500 to-indigo-600", desc: "Browse hostels & rooms", icon: <FaBuilding /> },
@@ -23,6 +24,7 @@ export default function StudentDashboard() {
     { name: "Attendance", link: "/student/attendance", color: "from-yellow-500 to-orange-500", desc: "Daily attendance record", icon: <FaCalendarDay /> },
     { name: "Night Out", link: "/student/nightout", color: "from-red-500 to-pink-500", desc: "Request night out", icon: <FaMoon /> },
     { name: "Complaints", link: "/student/complaints", color: "from-purple-500 to-fuchsia-600", desc: "Raise food complaints", icon: <FaClipboardList /> },
+    { name: "Holiday Request", link: "/student/holidays", color: "from-cyan-500 to-sky-600", desc: "Apply for holidays", icon: <FaCalendarCheck />, },
   ];
 
   return (
@@ -46,7 +48,7 @@ export default function StudentDashboard() {
         </div>
 
         {/* ===== ALLOCATION STATUS ===== */}
-        <div className="bg-white rounded-2xl shadow p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* <div className="bg-white rounded-2xl shadow p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <p className="text-sm text-gray-500">Hostel</p>
             <h3 className="text-xl font-semibold text-gray-800">{studentInfo.hostel}</h3>
@@ -65,10 +67,10 @@ export default function StudentDashboard() {
               {studentInfo.status}
             </span>
           </div>
-        </div>
+        </div> */}
 
         {/* ===== STATS ===== */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
           {stats.map((stat) => (
             <div key={stat.label} className="bg-white rounded-xl shadow p-5 text-center hover:shadow-lg transition">
               {stat.icon}
@@ -76,7 +78,7 @@ export default function StudentDashboard() {
               <h3 className="text-3xl font-bold text-gray-800">{stat.value}</h3>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* ===== ACTION CARDS ===== */}
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Student Services</h2>

@@ -18,6 +18,7 @@ const Navbar = () => {
     { name: "Attendance", path: "/student/attendance" },
     { name: "Night Out", path: "/student/nightout" },
     { name: "Complaints", path: "/student/complaints" },
+    
   ];
 
   const adminLinks = [

@@ -16,10 +16,10 @@ export default function Complaints() {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="max-w-md mx-auto px-6 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Food Complaint</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Complaint</h1>
 
         <div className="bg-white p-6 rounded-2xl shadow-md space-y-4">
-          <select 
+          {/* <select 
             value={issueType} 
             onChange={e=>setIssueType(e.target.value)} 
             className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -28,7 +28,7 @@ export default function Complaints() {
             <option>Quantity</option>
             <option>Hygiene</option>
             <option>Delay</option>
-          </select>
+          </select> */}
 
           <textarea 
             placeholder="Description" 

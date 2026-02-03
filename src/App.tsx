@@ -23,6 +23,9 @@ import Complaints from "./pages/Complaints";
 
 // COMPONENTS
 import ProtectedRoute from "./components/ProtectedRoute";
+import StudentHoliday from "./pages/StudentHoliday";
+import AdminHolidayRequests from "./pages/AdminHolidayRequests";
+import AdminComplaints from "./pages/AdminComplaints";
 
 function App() {
   return (
@@ -75,7 +78,8 @@ function App() {
           }
         />
         <Route path="/admin/nightout" element={<AdminNightOut />} />
-
+        <Route path="/admin/holidays" element={<AdminHolidayRequests />} />
+        <Route path="admin/complaints" element={<AdminComplaints />}/>
         {/* ================= STUDENT ROUTES ================= */}
         <Route
           path="/student"
@@ -133,6 +137,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/student/holidays" element={<StudentHoliday />} />
 
         {/* ================= FALLBACK ROUTE ================= */}
         <Route path="*" element={<h1 className="p-10 text-center">404 - Page Not Found</h1>} />
