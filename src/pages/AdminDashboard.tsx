@@ -39,6 +39,14 @@ export default function AdminDashboard() {
       desc: "Daily & weekly food menu",
       icon: <FaUtensils className="w-10 h-10" />,
     },
+    {
+      name: "Night Out Requests",
+      link: "/admin/nightout",
+      color: "from-purple-500 to-indigo-600",
+      desc: "Approve / reject student night out requests",
+       icon: <FaUtensils className="w-10 h-10" />,
+    }
+
   ];
 
   return (

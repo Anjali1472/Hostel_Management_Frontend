@@ -11,7 +11,7 @@ import AdminHostels from "./pages/AdminHostels";
 import AdminRooms from "./pages/AdminRooms";
 import AdminRequests from "./pages/AdminRequests";
 import AdminMessMenu from "./pages/AdminMessMenu";
-
+import AdminNightOut from "./pages/AdminNightOut";
 // STUDENT PAGES
 import StudentDashboard from "./pages/StudentDashboard";
 import HostelList from "./pages/HostelList";
@@ -74,6 +74,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/admin/nightout" element={<AdminNightOut />} />
 
         {/* ================= STUDENT ROUTES ================= */}
         <Route
