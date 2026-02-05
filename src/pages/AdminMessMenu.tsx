@@ -2,219 +2,205 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import api from "../api/api";
 
-type MenuType = "DAILY" | "WEEKLY";
-type Category = "DAL" | "RICE" | "BHAJI" | "ROTI" | "SWEET" | "OTHER";
-
-interface MenuItem {
-  category: Category;
-  name: string;
-}
-
-interface ExistingMenuItem {
+interface Thali {
   id: number;
-  category: Category;
   name: string;
-  voteCount: number;
-}
-
-interface VoteCount {
-  itemId: number;
-  voteCount: number;
+  bhaji1: string;
+  bhaji2: string;
+  rice: string;
+  dal: string;
+  roti: string;
+  sweet: string;
+  image: string;
+   voteCount: number;
 }
 
 export default function AdminMessMenu() {
-  const [menuType, setMenuType] = useState<MenuType>("DAILY");
-  const [category, setCategory] = useState<Category>("DAL");
-  const [itemName, setItemName] = useState("");
-  const [items, setItems] = useState<MenuItem[]>([]);
-  const [existing, setExisting] = useState<ExistingMenuItem[]>([]);
-  // const [voteCounts, setVoteCounts] = useState<VoteCount[]>([]);
+  const [thalis, setThalis] = useState<Thali[]>([]);
+  
+  
+  const [form, setForm] = useState<{
+    name : string;
+    bhaji1: string;
+  bhaji2: string;
+  rice: string;
+  dal: string;
+  roti: string;
+  sweet: string;
+  image: File | null;
+   voteCount: number;
+  }>({
+    name: "",
+    bhaji1: "",
+    bhaji2: "",
+    rice: "",
+    dal: "",
+    roti: "",
+    sweet: "",
+    image: null,
+     voteCount: 0,
+   });
 
-  // ================= FETCH EXISTING MENU =================
-  const fetchExisting = async () => {
-    try {
-      const res = await api.get(`/api/admin/messmenu?type=${menuType}`);
-      setExisting(res.data);
-    } catch (err) {
-      console.error("Fetch failed", err);
-      setExisting([]);
-    }
+  // ================= FETCH =================
+  const fetchThalis = async () => {
+    const res = await api.get("/api/admin/messmenu");
+    setThalis(res.data);
   };
-
-  // ================= FETCH VOTE COUNTS =================
-  // const fetchVoteCounts = async () => {
-  //   try {
-  //     const res = await api.get(
-  //       `/api/admin/votes/count?menuType=${menuType}`
-  //     );
-  //     setVoteCounts(res.data);
-  //   } catch (err) {
-  //     console.error("Vote count fetch failed", err);
-  //     setVoteCounts([]);
-  //   }
-  // };
 
   useEffect(() => {
-    fetchExisting();
-    // fetchVoteCounts();
-  }, [menuType]);
+  const interval = setInterval(fetchThalis, 5000);
+  return () => clearInterval(interval);
+}, []);
 
-  // ================= ADD ITEM =================
-  const addItem = () => {
-    if (!itemName.trim()) return;
 
-    setItems(prev => [...prev, { category, name: itemName }]);
-    setItemName("");
-  };
-
-  // ================= SAVE MENU =================
-  const saveMenu = async () => {
-    if (items.length < 6) {
-      alert("Minimum 6 food items required");
+  // ================= SAVE THALI =================
+const saveThali = async () => {
+  const formData = new FormData();
+  // try {
+    if (!form.image) {
+      alert("Please select an imagePath");
+    
       return;
     }
 
-    const payload = items.map(i => ({
-      menuType,
-      category: i.category,
-      name: i.name,
-    }));
+    // const data = new FormData();
+   
+  formData.append("image",form.image)
+  formData.append("name", form.name);
+  formData.append("bhaji1", form.bhaji1);
+  formData.append("bhaji2", form.bhaji2);
+  formData.append("rice", form.rice);
+  formData.append("dal", form.dal);
+  formData.append("roti", form.roti);
+   formData.append("sweet", form.sweet);
+   formData.append("voteCount", form.voteCount+"");
+    console.log(formData +"...data")
+    console.log("image: "+form.image)
 
-    try {
-      await api.post("/api/admin/messmenu", payload);
-      alert("Mess Menu saved successfully!");
-      setItems([]);
-      fetchExisting();
-      // fetchVoteCounts();
-    } catch (err) {
-      console.error("Save failed", err);
-      alert("Failed to save menu");
-    }
+try {
+    await api.post("/api/admin/messmenu", formData);
+    
+    alert("Thali added");
+    fetchThalis();
+  } catch (e: any) {
+    console.error(e);
+    alert("Failed to add thali");
+  }
+};
+
+
+  // ================= DELETE =================
+  const deleteAll = async () => {
+    if (!confirm("Delete all thalis?")) return;
+    await api.delete("/api/admin/messmenu");
+    fetchThalis();
   };
-
-  // ================= DELETE MENU =================
-  const deleteMenu = async () => {
-    if (!confirm("Are you sure you want to delete the menu?")) return;
-
-    try {
-      await api.delete(`/api/admin/messmenu?type=${menuType}`);
-      alert("Menu deleted");
-      setExisting([]);
-      // setVoteCounts([]);
-    } catch (err) {
-      console.error("Delete failed", err);
-      alert("Failed to delete menu");
-    }
-  };
-
-  // ================= MAP FOR FAST LOOKUP =================
-  // const voteMap: Record<number, number> = {};
-  // voteCounts.forEach(v => {
-  //   voteMap[v.itemId] = v.voteCount;
-  // });
 
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
 
-      <div className="max-w-3xl mx-auto bg-white p-6 mt-8 rounded-xl shadow">
-        <h1 className="text-2xl font-bold mb-4">Mess Menu Management</h1>
+      <div className="max-w-4xl mx-auto bg-white p-6 mt-8 rounded-xl shadow">
+        <h1 className="text-2xl font-bold mb-4">Thali Management</h1>
 
-        {/* CURRENT MENU */}
-        <div className="mb-6">
-          <h2 className="font-semibold mb-2">
-            Current Menu ({existing.length} items)
-          </h2>
+        {/* FORM */}
+        <input
+          value={form.name}
+          onChange={e => setForm({ ...form, name: e.target.value })}
+          placeholder="Thali Name"
+          className="border p-2 w-full rounded mb-2"
+        />
 
-          {existing.length === 0 && (
-            <p className="text-gray-500 text-sm">No menu available</p>
-          )}
+        <input
+          value={form.bhaji1}
+          onChange={e => setForm({ ...form, bhaji1: e.target.value })}
+          placeholder="Bhaji 1"
+          className="border p-2 w-full rounded mb-2"
+        />
 
-          {existing.map(i => (
-            <p
-              key={i.id}
-              className="text-sm text-gray-700 flex justify-between"
-            >
-              <span>
-                {i.category} - {i.name}
-              </span>
-              <span className="font-semibold text-blue-600">
-                {i.voteCount} votes
-              </span>
+        <input
+          value={form.bhaji2}
+          onChange={e => setForm({ ...form, bhaji2: e.target.value })}
+          placeholder="Bhaji 2"
+          className="border p-2 w-full rounded mb-2"
+        />
+
+        <input
+          value={form.rice}
+          onChange={e => setForm({ ...form, rice: e.target.value })}
+          placeholder="Rice"
+          className="border p-2 w-full rounded mb-2"
+        />
+
+        <input
+          value={form.dal}
+          onChange={e => setForm({ ...form, dal: e.target.value })}
+          placeholder="Dal"
+          className="border p-2 w-full rounded mb-2"
+        />
+
+        <input
+          value={form.roti}
+          onChange={e => setForm({ ...form, roti: e.target.value })}
+          placeholder="Roti"
+          className="border p-2 w-full rounded mb-2"
+        />
+
+        <input
+          value={form.sweet}
+          onChange={e => setForm({ ...form, sweet: e.target.value })}
+          placeholder="Sweet"
+          className="border p-2 w-full rounded mb-2"
+        />
+
+        {/* IMAGE INPUT */}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={e =>   setForm({
+                      ...form,
+                      image: e.target.files ? e.target.files[0] : null,
+                    })}
+          className="border p-2 w-full rounded mb-2"
+        />
+
+        <button
+          onClick={saveThali}
+          className="bg-green-600 text-white w-full py-2 rounded"
+        >
+          Add Thali
+        </button>
+
+        <hr className="my-6" />
+
+        {/* LIST */}
+        <h2 className="font-semibold mb-2">Current Thalis</h2>
+
+        {thalis.map(t => (
+          <div key={t.id} className="border p-3 rounded mb-3">
+            <p className="font-bold">{t.name}</p>
+            <p>
+              {t.bhaji1}, {t.bhaji2}, {t.rice}, {t.dal}, {t.roti}, {t.sweet}
             </p>
-          ))}
-        </div>
 
-        {/* ITEMS TO BE SAVED */}
-        {items.length > 0 && (
-          <div className="mb-4 p-3 bg-yellow-50 rounded">
-            <p className="font-semibold text-sm">
-              Items to be saved ({items.length})
+            <img
+              src={`http://localhost:8080${t.image}`}
+              alt={t.name}
+              className="w-full h-40 object-cover rounded mt-2"
+            />
+
+            <p className="text-blue-600 font-semibold mt-1">
+              {t.voteCount} votes
             </p>
-            {items.map((i, idx) => (
-              <p key={idx} className="text-sm">
-                {i.category} – {i.name}
-              </p>
-            ))}
           </div>
-        )}
+        ))}
 
-        {/* MENU TYPE */}
-        <select
-          value={menuType}
-          onChange={e => setMenuType(e.target.value as MenuType)}
-          className="border p-2 w-full rounded mb-3"
+        <button
+          onClick={deleteAll}
+          className="bg-red-600 text-white w-full py-2 rounded mt-3"
         >
-          <option value="DAILY">Daily</option>
-          <option value="WEEKLY">Weekly</option>
-        </select>
-
-        {/* CATEGORY */}
-        <select
-          value={category}
-          onChange={e => setCategory(e.target.value as Category)}
-          className="border p-2 w-full rounded mb-3"
-        >
-          <option value="DAL">Dal</option>
-          <option value="RICE">Rice</option>
-          <option value="BHAJI">Bhaji</option>
-          <option value="ROTI">Roti</option>
-          <option value="SWEET">Sweet</option>
-          <option value="OTHER">Other</option>
-        </select>
-
-        {/* ADD ITEM */}
-        <div className="flex gap-2 mb-4">
-          <input
-            value={itemName}
-            onChange={e => setItemName(e.target.value)}
-            placeholder="Food item"
-            className="border p-2 rounded w-full"
-          />
-          <button
-            onClick={addItem}
-            className="bg-blue-600 text-white px-4 rounded"
-          >
-            Add
-          </button>
-        </div>
-
-        {/* ACTION BUTTONS */}
-        <div className="flex gap-3">
-          <button
-            onClick={saveMenu}
-            className="bg-green-600 text-white flex-1 py-2 rounded"
-          >
-            Save Menu
-          </button>
-
-          <button
-            onClick={deleteMenu}
-            className="bg-red-600 text-white flex-1 py-2 rounded"
-          >
-            Delete Menu
-          </button>
-        </div>
+          Delete All
+        </button>
       </div>
     </div>
   );
