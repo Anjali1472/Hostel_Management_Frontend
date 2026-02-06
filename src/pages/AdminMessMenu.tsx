@@ -101,105 +101,94 @@ try {
       <Navbar />
 
       <div className="max-w-4xl mx-auto bg-white p-6 mt-8 rounded-xl shadow">
-        <h1 className="text-2xl font-bold mb-4">Thali Management</h1>
+        <h1 className="text-2xl font-bold mb-6">🍽️ Thali Management</h1>
 
-        {/* FORM */}
-        <input
-          value={form.name}
-          onChange={e => setForm({ ...form, name: e.target.value })}
-          placeholder="Thali Name"
-          className="border p-2 w-full rounded mb-2"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            ["name", "Thali Name"],
+            ["bhaji1", "Bhaji 1"],
+            ["bhaji2", "Bhaji 2"],
+            ["rice", "Rice"],
+            ["dal", "Dal"],
+            ["roti", "Roti"],
+            ["sweet", "Sweet"],
+          ].map(([key, placeholder]) => (
+            <input
+              key={key}
+              value={(form as any)[key]}
+              onChange={e => setForm({ ...form, [key]: e.target.value })}
+              placeholder={placeholder}
+              className="border p-2 rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
+            />
+          ))}
+        </div>
 
-        <input
-          value={form.bhaji1}
-          onChange={e => setForm({ ...form, bhaji1: e.target.value })}
-          placeholder="Bhaji 1"
-          className="border p-2 w-full rounded mb-2"
-        />
-
-        <input
-          value={form.bhaji2}
-          onChange={e => setForm({ ...form, bhaji2: e.target.value })}
-          placeholder="Bhaji 2"
-          className="border p-2 w-full rounded mb-2"
-        />
-
-        <input
-          value={form.rice}
-          onChange={e => setForm({ ...form, rice: e.target.value })}
-          placeholder="Rice"
-          className="border p-2 w-full rounded mb-2"
-        />
-
-        <input
-          value={form.dal}
-          onChange={e => setForm({ ...form, dal: e.target.value })}
-          placeholder="Dal"
-          className="border p-2 w-full rounded mb-2"
-        />
-
-        <input
-          value={form.roti}
-          onChange={e => setForm({ ...form, roti: e.target.value })}
-          placeholder="Roti"
-          className="border p-2 w-full rounded mb-2"
-        />
-
-        <input
-          value={form.sweet}
-          onChange={e => setForm({ ...form, sweet: e.target.value })}
-          placeholder="Sweet"
-          className="border p-2 w-full rounded mb-2"
-        />
-
-        {/* IMAGE INPUT */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={e =>   setForm({
-                      ...form,
-                      image: e.target.files ? e.target.files[0] : null,
-                    })}
-          className="border p-2 w-full rounded mb-2"
-        />
+        {/* Image Upload */}
+        <div className="mt-4">
+          <label className="block text-sm font-medium mb-1">Thali Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={e =>
+              setForm({
+                ...form,
+                image: e.target.files ? e.target.files[0] : null,
+              })
+            }
+            className="block w-full text-sm border rounded-lg file:bg-green-600 file:text-white file:px-4 file:py-2 file:border-0 file:rounded-lg"
+          />
+        </div>
 
         <button
           onClick={saveThali}
-          className="bg-green-600 text-white w-full py-2 rounded"
+          className="mt-5 bg-green-600 hover:bg-green-700 text-white w-full py-3 rounded-xl font-semibold transition"
         >
-          Add Thali
+          ➕ Add Thali
         </button>
 
-        <hr className="my-6" />
 
-        {/* LIST */}
-        <h2 className="font-semibold mb-2">Current Thalis</h2>
+                <hr className="my-6" />
 
-        {thalis.map(t => (
-          <div key={t.id} className="border p-3 rounded mb-3">
-            <p className="font-bold">{t.name}</p>
-            <p>
-              {t.bhaji1}, {t.bhaji2}, {t.rice}, {t.dal}, {t.roti}, {t.sweet}
-            </p>
+                {/* LIST */}
+        <h2 className="font-semibold text-lg mb-3">📋 Current Thalis</h2>
 
-            <img
-              src={`http://localhost:8080${t.image}`}
-              alt={t.name}
-              className="w-full h-40 object-cover rounded mt-2"
-            />
+        <div className="space-y-4">
+          {thalis.map(t => (
+            <div
+              key={t.id}
+              className="flex gap-4 bg-gray-50 border rounded-xl p-4 shadow-sm hover:shadow transition"
+            >
+              {/* Image */}
+              <div className="w-36 h-24 overflow-hidden rounded-lg flex-shrink-0">
+                <img
+                  src={`http://localhost:8080${t.image}`}
+                  alt={t.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
 
-            <p className="text-blue-600 font-semibold mt-1">
-              {t.voteCount} votes
-            </p>
-          </div>
-        ))}
+              {/* Info */}
+              <div className="flex-1">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-bold text-gray-800">{t.name}</h3>
 
+                  <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
+                    👍 {t.voteCount} votes
+                  </span>
+                </div>
+
+                <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+                  {t.bhaji1}, {t.bhaji2}, {t.rice}, {t.dal}, {t.roti}, {t.sweet}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
         <button
           onClick={deleteAll}
-          className="bg-red-600 text-white w-full py-2 rounded mt-3"
+          className="mt-6 bg-red-600 hover:bg-red-700 text-white w-full py-3 rounded-xl font-semibold transition"
         >
-          Delete All
+          🗑️ Delete All Thalis
         </button>
       </div>
     </div>

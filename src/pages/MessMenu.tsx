@@ -201,38 +201,60 @@ export default function MessMenu() {
         <h1 className="text-3xl font-bold mb-6">Vote for Thali</h1>
 
         {thalis.map(t => (
-          <label
-            key={t.id}
-            className={`block bg-white p-4 rounded-xl shadow mb-4 cursor-pointer
-            ${selected === t.id ? "ring-2 ring-blue-500" : ""}`}
-          >
-            <img
-              src={`http://localhost:8080${t.image}`}
-              className="w-full h-48 object-cover rounded mb-2"
-            />
+  <label
+    key={t.id}
+    className={`flex gap-4 items-center bg-white p-4 rounded-2xl shadow-sm mb-4 cursor-pointer
+    transition-all duration-200
+    hover:shadow-md hover:scale-[1.01]
+    ${selected === t.id ? "ring-2 ring-blue-500 bg-blue-50" : ""}
+    ${hasVoted ? "opacity-70 cursor-not-allowed" : ""}`}
+  >
+    {/* Image */}
+    <div className="w-40 h-28 flex-shrink-0 overflow-hidden rounded-xl">
+      <img
+        src={`http://localhost:8080${t.image}`}
+        alt={t.name}
+        className="w-full h-full object-cover"
+      />
+    </div>
 
+    {/* Content */}
+    <div className="flex-1">
+      <h2 className="text-lg font-semibold text-gray-800 mb-1">
+        {t.name}
+      </h2>
 
-            <h2 className="font-bold text-lg">{t.name}</h2>
-            <p>{t.bhaji1}, {t.bhaji2}, {t.rice}, {t.dal}, {t.roti}, {t.sweet}</p>
+      <p className="text-sm text-gray-600 leading-relaxed">
+        {t.bhaji1}, {t.bhaji2} <br />
+        {t.rice} ·  {t.dal} · {t.roti} · {t.sweet}
+      </p>
+    </div>
 
-            <input
-              type="radio"
-              disabled={hasVoted}
-              checked={selected === t.id}
-              onChange={() => setSelected(t.id)}
-            />
+    {/* Radio */}
+    <input
+      type="radio"
+      disabled={hasVoted}
+      checked={selected === t.id}
+      onChange={() => setSelected(t.id)}
+      className="w-5 h-5 accent-blue-600"
+    />
+  </label>
+))}
 
-          </label>
-        ))}
 
         <button
-          disabled={hasVoted}
-          onClick={vote}
-          className={`w-full py-3 rounded
-          ${hasVoted ? "bg-gray-400" : "bg-blue-600 text-white"}`}
-        >
-          {hasVoted ? "Already Voted" : "Submit Vote"}
-        </button>
+  disabled={hasVoted}
+  onClick={vote}
+  className={`w-full mt-6 py-3 rounded-xl text-lg font-semibold transition
+  ${
+    hasVoted
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-blue-600 text-white hover:bg-blue-700"
+  }`}
+>
+  {hasVoted ? "Already Voted" : "Submit Vote"}
+</button>
+
       </div>
     </div>
   );
