@@ -12,6 +12,7 @@ import AdminRooms from "./pages/AdminRooms";
 import AdminRequests from "./pages/AdminRequests";
 import AdminMessMenu from "./pages/AdminMessMenu";
 import AdminNightOut from "./pages/AdminNightOut";
+import AdminAttendance from "./pages/AdminAttendance";
 // STUDENT PAGES
 import StudentDashboard from "./pages/StudentDashboard";
 import HostelList from "./pages/HostelList";
@@ -20,7 +21,7 @@ import MessMenu from "./pages/MessMenu";
 import Attendance from "./pages/Attendance";
 import NightOut from "./pages/NightOut";
 import Complaints from "./pages/Complaints";
-
+import StudentAttendance from "./pages/StudentAttendance";
 // COMPONENTS
 import ProtectedRoute from "./components/ProtectedRoute";
 import StudentHoliday from "./pages/StudentHoliday";
@@ -80,6 +81,10 @@ function App() {
         <Route path="/admin/nightout" element={<AdminNightOut />} />
         <Route path="/admin/holidays" element={<AdminHolidayRequests />} />
         <Route path="admin/complaints" element={<AdminComplaints />}/>
+
+        <Route path="/student/attendance" element={<StudentAttendance />} />
+<Route path="/admin/attendance" element={<AdminAttendance />} />
+
         {/* ================= STUDENT ROUTES ================= */}
         <Route
           path="/student"

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { FaBuilding, FaBed, FaClipboardList, FaUtensils, FaCalendarAlt, FaExclamationCircle } from "react-icons/fa";
+import { FaBuilding, FaBed, FaClipboardList, FaUtensils, FaCalendarAlt, FaExclamationCircle, FaCalendarDay } from "react-icons/fa";
 
 export default function AdminDashboard() {
   // const stats = [
@@ -60,6 +60,13 @@ export default function AdminDashboard() {
       desc: "View & manage student complaints",
       icon: <FaExclamationCircle className="w-10 h-10" />,
     },
+    {
+    name: "Addtendence",
+    color: "from-red-500 to-pink-500",
+    desc: "Attrendence management",
+    icon: <FaCalendarDay className="w-8 h-8 text-purple-600" />,
+    link: "/admin/attendance",
+  },
   ];
 
   return (
@@ -119,6 +126,7 @@ export default function AdminDashboard() {
             </Link>
           ))}
         </div>
+        
       </div>
     </div>
   );
